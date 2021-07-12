@@ -166,6 +166,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: lbry/lbrynet
           path: docker
+          dockerfile: docker/Dockerfile.wallet_server
           tag_with_ref: true
           tag_with_sha: true
           add_git_labels: true
