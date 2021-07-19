@@ -21,35 +21,35 @@ jobs:
           pip install -e .[torrent,lint]
       - run: make lint
 
-  tests-unit:
-    name: "tests / unit"
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-            #- macos-latest
-            #- windows-latest
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v1
-        with:
-          python-version: '3.7'
-      - name: set pip cache dir
-        id: pip-cache
-        run: echo "::set-output name=dir::$(pip cache dir)"
-      - name: extract pip cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.pip-cache.outputs.dir }}
-          key: ${{ runner.os }}-pip-${{ hashFiles('setup.py') }}
-          restore-keys: ${{ runner.os }}-pip-
-      - run: |
-          pip install --user --upgrade pip wheel
-          pip install -e .[torrent,test]
-      - env:
-          HOME: /tmp
-        run: make test-unit-coverage
+#  tests-unit:
+#    name: "tests / unit"
+#    strategy:
+#      matrix:
+#        os:
+#          - ubuntu-latest
+#            #- macos-latest
+#            #- windows-latest
+#    runs-on: ${{ matrix.os }}
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/setup-python@v1
+#        with:
+#          python-version: '3.7'
+#      - name: set pip cache dir
+#        id: pip-cache
+#        run: echo "::set-output name=dir::$(pip cache dir)"
+#      - name: extract pip cache
+#        uses: actions/cache@v2
+#        with:
+#          path: ${{ steps.pip-cache.outputs.dir }}
+#          key: ${{ runner.os }}-pip-${{ hashFiles('setup.py') }}
+#          restore-keys: ${{ runner.os }}-pip-
+#      - run: |
+#          pip install --user --upgrade pip wheel
+#          pip install -e .[torrent,test]
+#      - env:
+#          HOME: /tmp
+#        run: make test-unit-coverage
 
 #  tests-integration:
 #    name: "tests / integration"
@@ -90,7 +90,7 @@ jobs:
 #      - run: tox -e ${{ matrix.test }}
 
   build:
-    needs: ["lint", "tests-unit"] #, "tests-integration"]
+    needs: ["lint"] #, "tests-unit", "tests-integration"]
     name: "build"
     strategy:
       matrix:
@@ -159,6 +159,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
+          tag_name: vTestFoo
           draft: true
           files: |
             lbrynet-macos-latest/lbrynet
