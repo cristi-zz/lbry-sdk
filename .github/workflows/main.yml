@@ -120,34 +120,32 @@ jobs:
           # https://stackoverflow.com/a/61693590
           # https://github.com/pypa/setuptools/issues/1963
           pip install --upgrade 'setuptools<45.0.0'
-      - if: startsWith(matrix.os, 'ubuntu')
+      - if: startsWith(runner.os, 'linux')
         name: Build & Run (Linux)
         run: |
           pip install -e .[torrent]
-          python docker/set_build.py
-          pyinstaller --onefile --name lbrynet lbry/extras/cli.py
-          chmod +x dist/lbrynet
-          dist/lbrynet --version
-      - if: startsWith(matrix.os, 'macos')
+      - if: startsWith(runner.os, 'mac')
         name: Build & Run (Mac)
         run: |
           pip install -e .
+      - if: startsWith(runner.os, 'linux') || startsWith(runner.os, 'mac')
+        name: Build & Run (Unix)
+        run: |
           python docker/set_build.py
           pyinstaller --onefile --name lbrynet lbry/extras/cli.py
-          chmod +x dist/lbrynet
+          #chmod +x dist/lbrynet
           dist/lbrynet --version
-      - if: startsWith(matrix.os, 'windows')
+      - if: startsWith(runner.os, 'windows')
         name: Build & Run (Windows)
         run: |
           pip install pywin32
           pip install -e .
           python docker/set_build.py
           pyinstaller --additional-hooks-dir=scripts/. --icon=icons/lbry256.ico --onefile --name lbrynet lbry/extras/cli.py
-          7z a -tzip ./dist/lbrynet-windows.zip ./dist/lbrynet.exe
           dist/lbrynet.exe --version
       - uses: actions/upload-artifact@v2
         with:
-          name: lbrynet-${{ matrix.os }}
+          name: lbrynet-${{ runner.os }}
           path: dist/
 
   release:
@@ -157,6 +155,12 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: actions/download-artifact@v2
+      - run: |
+          chmod +x lbrynet-mac/lbrynet
+          chmod +x lbrynet-linux/lbrynet
+          zip --junk-paths lbrynet-mac.zip lbrynet-mac/lbrynet
+          zip --junk-paths lbrynet-linux.zip lbrynet-linux/lbrynet
+          zip --junk-paths lbrynet-windows.zip lbrynet-windows/lbrynet.exe
       - name: Release
         uses: softprops/action-gh-release@v1
         #if: startsWith(github.ref, 'refs/tags/')
@@ -166,9 +170,9 @@ jobs:
           tag_name: vTestFoo
           draft: true
           files: |
-            lbrynet-macos-latest/lbrynet
-            lbrynet-ubuntu-16.04/lbrynet
-            lbrynet-windows-latest/lbrynet-windows.zip
+            lbrynet-mac.zip
+            lbrynet-linux.zip
+            lbrynet-windows.zip
 #      - run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
 #      - env:
 #          GITHUB_TOKEN: ${{ github.token }}
@@ -187,7 +191,7 @@ jobs:
       - name: fetch lbrynet binary
         uses: actions/download-artifact@v2
         with:
-          name: lbrynet-ubuntu-16.04
+          name: lbrynet-linux-latest
       - run: |
           chmod +x lbrynet
           mv lbrynet docker
