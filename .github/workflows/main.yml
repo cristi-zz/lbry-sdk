@@ -124,6 +124,7 @@ jobs:
         name: Build & Run (Linux)
         run: |
           pip install -e .[torrent]
+          python docker/set_build.py
           pyinstaller --onefile --name lbrynet lbry/extras/cli.py
           chmod +x dist/lbrynet
           dist/lbrynet --version
@@ -131,6 +132,7 @@ jobs:
         name: Build & Run (Mac)
         run: |
           pip install -e .
+          python docker/set_build.py
           pyinstaller --onefile --name lbrynet lbry/extras/cli.py
           chmod +x dist/lbrynet
           dist/lbrynet --version
@@ -139,7 +141,9 @@ jobs:
         run: |
           pip install pywin32
           pip install -e .
+          python docker/set_build.py
           pyinstaller --additional-hooks-dir=scripts/. --icon=icons/lbry256.ico --onefile --name lbrynet lbry/extras/cli.py
+          7z a -tzip ./dist/lbrynet-windows.zip ./dist/lbrynet.exe
           dist/lbrynet.exe --version
       - uses: actions/upload-artifact@v2
         with:
@@ -164,7 +168,7 @@ jobs:
           files: |
             lbrynet-macos-latest/lbrynet
             lbrynet-ubuntu-16.04/lbrynet
-            lbrynet-windows-latest/lbrynet.exe
+            lbrynet-windows-latest/lbrynet-windows.zip
 #      - run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
 #      - env:
 #          GITHUB_TOKEN: ${{ github.token }}
