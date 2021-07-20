@@ -120,16 +120,16 @@ jobs:
       - if: startsWith(runner.os, 'linux')
         name: preparelinux
         run: |
-          apt-get update
-          apt-get install -y --no-install-recommends software-properties-common zip curl build-essential
-          add-apt-repository -y ppa:deadsnakes/ppa
-          apt-get update
-          apt-get install -y --no-install-recommends python3.7-dev
-          python3.7 <(curl -q https://bootstrap.pypa.io/get-pip.py)
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends software-properties-common zip curl build-essential
+          sudo add-apt-repository -y ppa:deadsnakes/ppa
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends python3.7-dev
+          sudo python3.7 <(curl -q https://bootstrap.pypa.io/get-pip.py)
       - name: Setup
         run: |
-          pip install --upgrade 'setuptools<45.0.0'
-          pip install pyinstaller==4.3
+          sudo pip install --upgrade 'setuptools<45.0.0'
+          sudo pip install pyinstaller==4.3
           # https://stackoverflow.com/a/61693590
           # https://github.com/pypa/setuptools/issues/1963
       - if: startsWith(runner.os, 'linux')
