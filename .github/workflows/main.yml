@@ -127,7 +127,7 @@ jobs:
       - if: startsWith(runner.os, 'linux')
         name: Build & Run (Linux)
         run: |
-          pip install -e .[torrent]
+          pip install -e .
       - if: startsWith(runner.os, 'mac')
         name: Build & Run (Mac)
         run: |
@@ -159,7 +159,6 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/download-artifact@v2
       - run: |
-          ls -l lbrynet-linux/
           chmod +x lbrynet-macos/lbrynet
           chmod +x lbrynet-linux/lbrynet
           zip --junk-paths lbrynet-mac.zip lbrynet-macos/lbrynet
