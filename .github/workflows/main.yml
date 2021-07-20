@@ -119,8 +119,8 @@ jobs:
 #          restore-keys: ${{ runner.os }}-pip-
       - name: Setup
         run: |
-          sudo pip install --upgrade 'setuptools<45.0.0'
-          sudo pip install pyinstaller==4.3
+          pip install --upgrade 'setuptools<45.0.0'
+          pip install pyinstaller==4.3
           # https://stackoverflow.com/a/61693590
           # https://github.com/pypa/setuptools/issues/1963
       - if: startsWith(runner.os, 'linux')
